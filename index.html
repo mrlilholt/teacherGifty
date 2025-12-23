@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gifts for Teachers | Find the Perfect Teacher Gift for Any Occasion</title>
+<!-- SEO meta tags -->
+<meta content="Discover the perfect teacher gift with our curated collection of appreciation ideas for parents and students. Browse thank‑you notes, photo books, personalized gifts, classroom supplies, and more. Filter by budget, holiday or gift type to find a thoughtful present for any educator." name="description"/>
+<meta content="teacher gifts, teacher appreciation gifts, gifts for teachers, teacher gift ideas, teacher gifts from students, teacher gifts from parents, holiday teacher gifts" name="keywords"/>
+<!-- Open Graph tags for social sharing -->
+<meta content="Gifts for Teachers | Find the Perfect Teacher Gift" property="og:title"/>
+<meta content="Explore a thoughtful selection of teacher appreciation gifts. Whether you’re a parent or a student, find meaningful cards, personalized keepsakes, classroom supplies and holiday gifts." property="og:description"/>
+<meta content="images/hero-bg.png" property="og:image"/>
+<meta content="https://giftsforteachers.netlify.app/" property="og:url"/>
+<meta content="website" property="og:type"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<!-- Font Awesome for icons -->
+<link crossorigin="anonymous" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-vP1+QjO/RTSf1sWZVpHk6VX3lfcaJpW8TdpjPPL3CuH8Q+8tuNzRA5p4uyZAon+dR8Jq12jR2bqIyN5Jw8qf3g==" referrerpolicy="no-referrer" rel="stylesheet"/>
+<link href="style.css" rel="stylesheet"/>
+</head>
+<body>
+<!-- Header and navigation -->
+<header>
+<div class="container">
+<!-- Replace textual site title with logo -->
+<div class="site-logo">
+<a href="index.html">
+<img alt="Gifts for Teachers logo" src="images/logo.png"/>
+</a>
+</div>
+<nav class="site-nav">
+<a href="index.html">Home</a>
+<a href="holidays.html">Holidays</a>
+<a href="types.html">Gift Types</a>
+<a href="blog.html">Blog</a>
+</nav>
+</div>
+</header>
+<main>
+<!-- Hero section with background image and bottom‑aligned content -->
+<section class="hero">
+<div class="hero-content">
+<p class="hero-tagline">
+            Whether you're a parent or a student, discover gifts that show your
+            appreciation.
+          </p>
+<div class="role-selection">
+<button class="role-btn" id="parent-btn">I'm a Parent</button>
+<button class="role-btn" id="student-btn">I'm a Student</button>
+</div>
+<!-- Dynamic message shown when a parent or student selects their role -->
+<div class="role-message" id="role-message" style="display: none;"></div>
+<!-- Integrated quick search inside the hero -->
+<div class="search-container">
+<input aria-label="Search for gifts" id="global-search-input" placeholder="Search for gifts..." type="text"/>
+<div class="search-results" id="search-results"></div>
+</div>
+</div>
+</section>
+<!-- Random gift selector -->
+<section class="randomizer-section">
+<h2>Not sure what to choose?</h2>
+<p>Don't have time to think? Let us do the gifting for you.</p>
+<div class="randomizer-controls">
+<label for="price-range">Select your budget:</label>
+<select id="price-range">
+<option value="2">$1–$2</option>
+<option value="5">$3–$5</option>
+<option value="10">$10 and below</option>
+<option value="15">$15 and below</option>
+<option value="20">$20 and below</option>
+<option value="above20">Above $20</option>
+</select>
+<button class="random-btn" id="random-btn">Get Random Gift</button>
+</div>
+<div class="random-result" id="random-result"></div>
+</section>
+<!-- Featured recommendations -->
+<section id="recommendations">
+<h2>Featured Gifts</h2>
+<div class="product-grid" id="recommendation-grid">
+<!-- Hand‑written notes and cards -->
+<div class="product-item" data-recipient="both">
+<!-- Use a custom image to illustrate thank-you cards -->
+<img alt="Thank‑You Cards &amp; Notes image" onerror="this.src='images/logo.png'" src="images/thankyou.jpg"/>
+<div class="product-item-content">
+<h3>Thank‑You Cards &amp; Notes</h3>
+<p>
+                A heartfelt note or card lets a teacher know exactly how they
+                made a difference. Include specific memories for extra impact.
+              </p>
+<a href="https://www.amazon.com/s?k=teacher+thank+you+cards&amp;tag=giftsforteacher-20" target="_blank">Shop on Amazon</a>
+</div>
+</div>
+<!-- Photo book kit -->
+<div class="product-item" data-recipient="both">
+<!-- Custom image illustrating a photo book kit -->
+<!-- TODO: Replace this card image. Put your file in /images/ (or /images/items/) and set src to it. Example: images/items/your-image.png -->
+
+<img alt="Photo Book Kit image" onerror="this.src='images/logo.png'" src="images/photobook.png"/>
+<div class="product-item-content">
+<h3>Photo Book Kit</h3>
+<p>
+                Collect classroom photos and create a keepsake album the whole
+                class can sign and present together.
+              </p>
+<a href="https://www.amazon.com/s?k=photo+book+kit&amp;tag=giftsforteacher-20" target="_blank">Shop on Amazon</a>
+</div>
+</div>
+<!-- Audible membership -->
+<div class="product-item" data-recipient="both">
+<!-- Image representing an Audible membership (headphones on books) -->
+<!-- TODO: Replace this card image. Put your file in /images/ (or /images/items/) and set src to it. Example: images/items/your-image.png -->
+
+<img alt="Audible Membership image" onerror="this.src='images/logo.png'" src="images/audible.png"/>
+<div class="product-item-content">
+<h3>Audible Membership</h3>
+<p>
+                Give the gift of audiobooks so teachers can enjoy stories or
+                professional development on the go.
+              </p>
+<a href="https://www.amazon.com/s?k=audible+membership&amp;tag=giftsforteacher-20" target="_blank">Shop on Amazon</a>
+</div>
+</div>
+<!-- Echo Dot smart speaker -->
+<div class="product-item" data-recipient="both">
+<!-- Image of a compact smart speaker on a desk -->
+<!-- TODO: Replace this card image. Put your file in /images/ (or /images/items/) and set src to it. Example: images/items/your-image.png -->
+
+<img alt="Smart Speaker (Echo Dot) image" onerror="this.src='images/logo.png'" src="images/echo.png"/>
+<div class="product-item-content">
+<h3>Smart Speaker (Echo Dot)</h3>
+<p>
+                A compact smart speaker plays music, sets timers and answers
+                questions — handy for the classroom or relaxing at home.
+              </p>
+<a href="https://www.amazon.com/s?k=echo+dot+smart+speaker&amp;tag=giftsforteacher-20" target="_blank">Shop on Amazon</a>
+</div>
+</div>
+<!-- Cozy socks -->
+<div class="product-item" data-recipient="both">
+<!-- Image of cozy colourful socks -->
+<!-- TODO: Replace this card image. Put your file in /images/ (or /images/items/) and set src to it. Example: images/items/your-image.png -->
+
+<img alt="Cozy Socks image" onerror="this.src='images/logo.png'" src="images/cozysocks.png"/>
+<div class="product-item-content">
+<h3>Cozy Socks</h3>
+<p>
+                Treat them to ultra‑soft socks for lounging after a long day on
+                their feet.
+              </p>
+<a href="https://www.amazon.com/s?k=cozy+teacher+socks&amp;tag=giftsforteacher-20" target="_blank">Shop on Amazon</a>
+</div>
+</div>
+<!-- Personalized stickers -->
+<div class="product-item" data-recipient="student">
+<!-- Image of teacher-themed stickers -->
+<!-- TODO: Replace this card image. Put your file in /images/ (or /images/items/) and set src to it. Example: images/items/your-image.png -->
+
+<img alt="Personalized Teacher Stickers image" onerror="this.src='images/logo.png'" src="images/stickers.jpg"/>
+<div class="product-item-content">
+<h3>Personalized Teacher Stickers</h3>
+<p>
+                Customized stickers for grading or decorating supplies are a fun
+                way to celebrate their name or motto.
+              </p>
+<a href="https://www.amazon.com/s?k=personalized+teacher+stickers&amp;tag=giftsforteacher-20" target="_blank">Shop on Amazon</a>
+</div>
+</div>
+<!-- Teacher hair ties -->
+<div class="product-item" data-recipient="student">
+<!-- Image of patterned hair ties -->
+<!-- TODO: Replace this card image. Put your file in /images/ (or /images/items/) and set src to it. Example: images/items/your-image.png -->
+
+<img alt="Teacher Hair Ties image" onerror="this.src='images/logo.png'" src="images/hairties.jpg"/>
+<div class="product-item-content">
+<h3>Teacher Hair Ties</h3>
+<p>
+                Cute hair ties with teacher sayings make a lighthearted and
+                practical token from students.
+              </p>
+<a href="https://www.amazon.com/s?k=teacher+hair+ties&amp;tag=giftsforteacher-20" target="_blank">Shop on Amazon</a>
+</div>
+</div>
+<!-- Personalized art print -->
+<div class="product-item" data-recipient="both">
+<!-- Image of a personalized art print -->
+<!-- TODO: Replace this card image. Put your file in /images/ (or /images/items/) and set src to it. Example: images/items/your-image.png -->
+
+<img alt="Personalized Art Print image" onerror="this.src='images/logo.png'" src="images/art_print_generated.png"/>
+<div class="product-item-content">
+<h3>Personalized Art Print</h3>
+<p>
+                Commission or customize a print that includes the teacher’s
+                name or a favorite quote for their wall.
+              </p>
+<a href="https://www.amazon.com/s?k=personalized+teacher+art+print&amp;tag=giftsforteacher-20" target="_blank">Shop on Amazon</a>
+</div>
+</div>
+<!-- Metal bookmark -->
+<div class="product-item" data-recipient="student">
+<!-- Remote image for Engraved Bookmark -->
+<!-- TODO: Replace this card image. Put your file in /images/ (or /images/items/) and set src to it. Example: images/items/your-image.png -->
+
+<img alt="Engraved Bookmark image" onerror="this.src='images/logo.png'" src="images/logo.png"/>
+<div class="product-item-content">
+<h3>Engraved Bookmark</h3>
+<p>
+                A metal bookmark engraved with a sweet message or the teacher’s
+                name makes a lasting keepsake.
+              </p>
+<a href="https://www.amazon.com/s?k=teacher+metal+bookmark&amp;tag=giftsforteacher-20" target="_blank">Shop on Amazon</a>
+</div>
+</div>
+<!-- Pencils & supplies kit -->
+<div class="product-item" data-recipient="parent">
+<!-- Remote image for Pencils & Supplies Kit -->
+<!-- TODO: Replace this card image. Put your file in /images/ (or /images/items/) and set src to it. Example: images/items/your-image.png -->
+
+<img alt="Pencils &amp; Supplies Kit image" onerror="this.src='images/logo.png'" src="images/logo.png"/>
+<div class="product-item-content">
+<h3>Pencils &amp; Supplies Kit</h3>
+<p>
+                Practical supplies like pre‑sharpened pencils, erasers and
+                highlighters keep classrooms stocked and reduce out‑of‑pocket
+                spending.
+              </p>
+<a href="https://www.amazon.com/s?k=pre+sharpened+pencils+kit&amp;tag=giftsforteacher-20" target="_blank">Shop on Amazon</a>
+</div>
+</div>
+<!-- Electric sharpener -->
+<div class="product-item" data-recipient="parent">
+<!-- Remote image for Electric Pencil Sharpener -->
+<!-- TODO: Replace this card image. Put your file in /images/ (or /images/items/) and set src to it. Example: images/items/your-image.png -->
+
+<img alt="Electric Pencil Sharpener image" onerror="this.src='images/logo.png'" src="images/sharpener.jpg"/>
+<div class="product-item-content">
+<h3>Electric Pencil Sharpener</h3>
+<p>
+                A reliable sharpener saves time and helps the whole class keep
+                writing without interruption.
+              </p>
+<a href="https://www.amazon.com/s?k=electric+pencil+sharpener&amp;tag=giftsforteacher-20" target="_blank">Shop on Amazon</a>
+</div>
+</div>
+<!-- Dry erase markers & board -->
+<div class="product-item" data-recipient="parent">
+<!-- Remote image for Dry Erase Markers & Board -->
+<!-- TODO: Replace this card image. Put your file in /images/ (or /images/items/) and set src to it. Example: images/items/your-image.png -->
+
+<img alt="Dry Erase Markers &amp; Board image" onerror="this.src='images/logo.png'" src="images/whiteboard.jpg"/>
+<div class="product-item-content">
+<h3>Dry Erase Markers &amp; Board</h3>
+<p>
+                Bright markers and a sturdy board help teachers plan lessons
+                and keep students engaged.
+              </p>
+<a href="https://www.amazon.com/s?k=dry+erase+marker+set+for+teachers&amp;tag=giftsforteacher-20" target="_blank">Shop on Amazon</a>
+</div>
+</div>
+<!-- Organization caddy -->
+<div class="product-item" data-recipient="parent">
+<!-- Remote image for Organization Caddy -->
+<!-- TODO: Replace this card image. Put your file in /images/ (or /images/items/) and set src to it. Example: images/items/your-image.png -->
+
+<img alt="Organization Caddy image" onerror="this.src='images/logo.png'" src="images/deskOrganizer.jpg"/>
+<div class="product-item-content">
+<h3>Organization Caddy</h3>
+<p>
+                A divided caddy or rolling cart keeps supplies tidy and easy
+                to transport around the classroom.
+              </p>
+<a href="https://www.amazon.com/s?k=teacher+organization+caddy&amp;tag=giftsforteacher-20" target="_blank">Shop on Amazon</a>
+</div>
+</div>
+<!-- Amazon gift card -->
+<div class="product-item" data-recipient="both">
+<!-- Remote image for Amazon Gift Card -->
+<!-- TODO: Replace this card image. Put your file in /images/ (or /images/items/) and set src to it. Example: images/items/your-image.png -->
+
+<img alt="Amazon Gift Card image" onerror="this.src='images/logo.png'" src="images/logo.png"/>
+<div class="product-item-content">
+<h3>Amazon Gift Card</h3>
+<p>
+                A gift card lets teachers choose exactly what they need or
+                treat themselves to something special.
+              </p>
+<a href="https://www.amazon.com/s?k=amazon+gift+card&amp;tag=giftsforteacher-20" target="_blank">Shop on Amazon</a>
+</div>
+</div>
+<!-- Coffee & hot chocolate sampler -->
+<div class="product-item" data-recipient="parent">
+<!-- Remote image for Coffee & Hot Chocolate Sampler -->
+<!-- TODO: Replace this card image. Put your file in /images/ (or /images/items/) and set src to it. Example: images/items/your-image.png -->
+
+<img alt="Coffee &amp; Hot Chocolate Sampler image" onerror="this.src='images/logo.png'" src="images/coffee.jpg"/>
+<div class="product-item-content">
+<h3>Coffee &amp; Hot Chocolate Sampler</h3>
+<p>
+                Gourmet coffee or cocoa packets stock the teachers' lounge and
+                provide a warm pick‑me‑up during breaks.
+              </p>
+<a href="https://www.amazon.com/s?k=coffee+and+hot+chocolate+gift+set&amp;tag=giftsforteacher-20" target="_blank">Shop on Amazon</a>
+</div>
+</div>
+<!-- Candy jar with sweet tag -->
+<div class="product-item" data-recipient="both">
+<!-- Remote image for Candy Jar -->
+<!-- TODO: Replace this card image. Put your file in /images/ (or /images/items/) and set src to it. Example: images/items/your-image.png -->
+
+<img alt="Candy Jar image" onerror="this.src='images/logo.png'" src="images/candy.jpg"/>
+<div class="product-item-content">
+<h3>Candy Jar</h3>
+<p>
+                Fill a jar with sweets and add a cute tag like “How sweet it is
+                to be taught by you” for an easy, thoughtful gift.
+              </p>
+<a href="https://www.amazon.com/s?k=candy+jar+teacher+gift&amp;tag=giftsforteacher-20" target="_blank">Shop on Amazon</a>
+</div>
+</div>
+<!-- Aromatherapy & candle set -->
+<div class="product-item" data-recipient="parent">
+<!-- Remote image for Aromatherapy & Candle Set -->
+<!-- TODO: Replace this card image. Put your file in /images/ (or /images/items/) and set src to it. Example: images/items/your-image.png -->
+
+<img alt="Aromatherapy &amp; Candle Set image" onerror="this.src='images/logo.png'" src="images/candles.jpg"/>
+<div class="product-item-content">
+<h3>Aromatherapy &amp; Candle Set</h3>
+<p>
+                Help them unwind with a spa‑inspired set of candles, oils and
+                lotions to reduce stress.
+              </p>
+<a href="https://www.amazon.com/s?k=teacher+aromatherapy+candle+set&amp;tag=giftsforteacher-20" target="_blank">Shop on Amazon</a>
+</div>
+</div>
+<!-- Funny teacher mug -->
+<div class="product-item" data-recipient="student">
+<!-- Remote image for Funny Teacher Mug -->
+<!-- TODO: Replace this card image. Put your file in /images/ (or /images/items/) and set src to it. Example: images/items/your-image.png -->
+
+<img alt="Funny Teacher Mug image" onerror="this.src='images/logo.png'" src="images/mug.jpg"/>
+<div class="product-item-content">
+<h3>Funny Teacher Mug</h3>
+<p>
+                A humorous mug with a punny saying adds a dose of laughter to
+                their morning coffee.
+              </p>
+<a href="https://www.amazon.com/s?k=funny+teacher+mug&amp;tag=giftsforteacher-20" target="_blank">Shop on Amazon</a>
+</div>
+</div>
+<!-- Punny teacher t-shirt -->
+<div class="product-item" data-recipient="student">
+<!-- Remote image for Punny Teacher T-Shirt -->
+<!-- TODO: Replace this card image. Put your file in /images/ (or /images/items/) and set src to it. Example: images/items/your-image.png -->
+
+<img alt="Punny Teacher T‑Shirt image" onerror="this.src='images/logo.png'" src="images/tshirt.jpg"/>
+<div class="product-item-content">
+<h3>Punny Teacher T‑Shirt</h3>
+<p>
+                A punny shirt brings humour to the classroom wardrobe.
+              </p>
+<a href="https://www.amazon.com/s?k=punny+teacher+t+shirt&amp;tag=giftsforteacher-20" target="_blank">Shop on Amazon</a>
+</div>
+</div>
+<!-- Quirky desk sign -->
+<div class="product-item" data-recipient="student">
+<!-- Remote image for Quirky Desk Sign -->
+<!-- TODO: Replace this card image. Put your file in /images/ (or /images/items/) and set src to it. Example: images/items/your-image.png -->
+
+<img alt="Quirky Desk Sign image" onerror="this.src='images/logo.png'" src="images/logo.png"/>
+<div class="product-item-content">
+<h3>Quirky Desk Sign</h3>
+<p>
+                A funny desk sign adds personality to their workspace and brings a smile.
+              </p>
+<a href="https://www.amazon.com/s?k=quirky+desk+sign+teacher&amp;tag=giftsforteacher-20" target="_blank">Shop on Amazon</a>
+</div>
+</div>
+<!-- Desk organizer -->
+<div class="product-item" data-recipient="parent">
+<!-- Remote image for Desk Organizer -->
+<!-- TODO: Replace this card image. Put your file in /images/ (or /images/items/) and set src to it. Example: images/items/your-image.png -->
+
+<img alt="Desk Organizer image" onerror="this.src='images/logo.png'" src="images/deskOrganizer.jpg"/>
+<div class="product-item-content">
+<h3>Desk Organizer</h3>
+<p>
+                Desk organizers corral pens, paperclips and small supplies, keeping workspaces tidy.
+              </p>
+<a href="https://www.amazon.com/s?k=desk+organizer+teacher+gift&amp;tag=giftsforteacher-20" target="_blank">Shop on Amazon</a>
+</div>
+</div>
+<!-- Rolling cart -->
+<div class="product-item" data-recipient="parent">
+<!-- Remote image for Rolling Cart -->
+<!-- TODO: Replace this card image. Put your file in /images/ (or /images/items/) and set src to it. Example: images/items/your-image.png -->
+
+<img alt="Rolling Cart image" onerror="this.src='images/logo.png'" src="images/logo.png"/>
+<div class="product-item-content">
+<h3>Rolling Cart</h3>
+<p>
+                A rolling cart helps transport books and supplies around the classroom with ease.
+              </p>
+<a href="https://www.amazon.com/s?k=rolling+cart+teacher+gift&amp;tag=giftsforteacher-20" target="_blank">Shop on Amazon</a>
+</div>
+</div>
+<!-- Stapler & hole punch -->
+<div class="product-item" data-recipient="parent">
+<!-- Remote image for Stapler & Hole Punch -->
+<!-- TODO: Replace this card image. Put your file in /images/ (or /images/items/) and set src to it. Example: images/items/your-image.png -->
+
+<img alt="Stapler &amp; Hole Punch image" onerror="this.src='images/logo.png'" src="images/stapler.jpg"/>
+<div class="product-item-content">
+<h3>Stapler &amp; Hole Punch</h3>
+<p>
+                Staplers and hole punches keep paperwork organised and tidy.
+              </p>
+<a href="https://www.amazon.com/s?k=stapler+and+hole+punch+teacher+gift&amp;tag=giftsforteacher-20" target="_blank">Shop on Amazon</a>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Blog preview (fresh content helps SEO + gives parents quick ideas) -->
+<section class="blog-preview">
+  <div class="container">
+    <h2 class="section-title">Latest from the Blog</h2>
+    <p class="section-subtitle">Quick guides, gift lists, and ideas parents and students can use right away.</p>
+
+    <div class="blog-grid">
+      <a class="blog-card" href="blog/teacher-gifts-under-20.html">
+        <div class="blog-card-meta">Gift Guide • Under $20</div>
+        <div class="blog-card-title">25 Teacher Gifts Under $20 That Feel Thoughtful</div>
+        <div class="blog-card-desc">Fast picks that work for most grade levels—plus simple ways to make them feel personal.</div>
+      </a>
+
+      <a class="blog-card" href="blog/teacher-appreciation-week-ideas.html">
+        <div class="blog-card-meta">Teacher Appreciation</div>
+        <div class="blog-card-title">Teacher Appreciation Week Ideas (Low‑Stress + Budget‑Friendly)</div>
+        <div class="blog-card-desc">A simple plan for parents, plus student‑friendly options that don’t require a big budget.</div>
+      </a>
+
+      <a class="blog-card" href="blog/classroom-supply-gifts.html">
+        <div class="blog-card-meta">Classroom Supplies</div>
+        <div class="blog-card-title">The Best Classroom Supply Gifts Teachers Actually Use</div>
+        <div class="blog-card-desc">From consumables to organizers—what’s most helpful (and what to skip).</div>
+      </a>
+    </div>
+
+    <div class="blog-cta">
+      <a class="btn secondary" href="blog.html">See all articles</a>
+    </div>
+  </div>
+</section>
+</main>
+<footer>
+<p>
+        © 2025 Gifts for Teachers. As an Amazon Associate, we earn from
+        qualifying purchases. Your support helps us provide more free resources.
+      </p>
+</footer>
+<script defer="" src="script.js"></script>
+</body>
+</html>
