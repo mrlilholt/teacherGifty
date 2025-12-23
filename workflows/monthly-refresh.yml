@@ -1,0 +1,39 @@
+name: Monthly Blog Refresh PR
+
+on:
+  schedule:
+    - cron: "0 14 1 * *" # 1st of month @ 14:00 UTC (~9am ET)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install deps
+        run: npm init -y && npm install openai@4
+
+      - name: Draft updates (1–2 posts)
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: node .github/scripts/draft-refresh.mjs
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "Monthly blog refresh draft"
+          title: "Monthly blog refresh draft"
+          body: "Automated draft refresh applied to 1–2 blog posts. Please review and merge to deploy via Netlify."
+          branch: "auto/monthly-refresh"
+          delete-branch: true
