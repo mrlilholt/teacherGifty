@@ -8,8 +8,8 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "openai": "^4.104.0"
-  }
+  },
+  "description": ""
 }
