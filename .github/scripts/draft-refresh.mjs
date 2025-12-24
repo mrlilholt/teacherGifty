@@ -260,3 +260,28 @@ Return ONLY the full HTML file.
     process.exit(1);
   }
 })();
+function writeStableMonthlyRedirect(targetFilename) {
+  const stablePath = path.join(BLOG_DIR, "monthly-teacher-gift-refresh.html");
+  const targetHref = `/blog/${targetFilename}`;
+
+  const html = `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Monthly Teacher Gift Ideas & Quick Wins</title>
+  <meta http-equiv="refresh" content="0; url=${targetHref}">
+  <link rel="canonical" href="${targetHref}">
+  <meta name="robots" content="noindex, follow">
+  <script>window.location.replace(${JSON.stringify(targetHref)});</script>
+</head>
+<body>
+  <p>Redirecting to the latest monthly teacher gift ideas…
+    <a href="${targetHref}">Click here</a>.
+  </p>
+</body>
+</html>`;
+
+  fs.writeFileSync(stablePath, html, "utf8");
+  console.log("Updated stable monthly refresh redirect.");
+}
