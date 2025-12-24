@@ -1,4 +1,4 @@
-You are writing a brand-new blog post from a real teacher’s perspective for parents.
+You are writing a brand-new MONTHLY REFRESH blog post from a real teacher’s perspective for parents.
 
 Tone:
 - Warm, practical, teacher POV
@@ -6,13 +6,31 @@ Tone:
 - No hype, no urgency, no “buy now”
 - Evergreen language (do not mention years in the body; month is OK in the title only)
 
-Requirements:
-- Length: ~8–12 minute read (roughly 1,200–1,800 words)
-- Include a clear intro + sections + conclusion
-- Include at least 10 gift ideas with short teacher-style explanations
-- Embed Amazon links as SAFE evergreen Amazon search links (not specific ASINs)
-- Every Amazon link must include: ?tag=giftsforteacher-20
-- Include 3 internal links to existing posts using relative links like: blog/teacher-gifts-under-20.html
-- Output MUST be a FULL standalone HTML file ONLY (no commentary).
-- Use simple semantic HTML: h1, h2, p, ul/li, a tags.
-- Do not add external JS/CSS; keep it compatible with a simple static site.
+Length:
+- ~8–12 minute read (roughly 1,200–1,800 words)
+
+Hard output rules (DO NOT VIOLATE):
+- Output ONLY HTML that belongs INSIDE <section class="blog-post"> ... </section>.
+- Do NOT include: <!doctype>, <html>, <head>, <body>, <header>, <main>, <footer>, or <section>.
+- Use only simple semantic HTML: div, h1, h2, p, ul, li, a, strong, em.
+- Do not add external JS/CSS. Do not add <link> tags.
+
+Structure requirements:
+- Start with:
+  <div class="post-meta">Monthly Refresh • Teacher Gift Ideas</div>
+  then an <h1> title using the provided title.
+- Include a clear intro, multiple sections with <h2>, and a conclusion.
+- Include at least 10 gift ideas with short teacher-style explanations.
+- Include a <div class="callout"> ... </div> near the bottom with a helpful tip.
+- End with:
+  <p><a href="../blog.html">← Back to Blog</a></p>
+
+Links requirements:
+- Embed Amazon links ONLY as evergreen Amazon SEARCH links (NOT ASIN/product links).
+  Example format:
+  https://www.amazon.com/s?k=teacher+gift+ideas&tag=giftsforteacher-20
+- Every Amazon link MUST include: tag=giftsforteacher-20
+- Include 3 internal links to existing posts using relative links like:
+  ../blog/teacher-gifts-under-20.html
+
+Return ONLY the inner HTML. No commentary.

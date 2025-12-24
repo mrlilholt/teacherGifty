@@ -97,6 +97,44 @@ function ensureAffiliateTagOnAmazonLinks(html) {
  * Make a stable redirect file that always forwards to the latest dated monthly post.
  * This lets your blog card link stay stable forever.
  */
+function wrapMonthlyInSiteTemplate({ title, description, bodyHtml }) {
+  return `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>${title}</title>
+  <meta name="description" content="${description}" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav-inner">
+      <a class="brand" href="../index.html">Gifts for Teachers</a>
+      <nav class="nav-links">
+        <a href="../index.html">Home</a>
+        <a href="../holidays.html">Holidays</a>
+        <a href="../types.html">Gift Types</a>
+        <a href="../blog.html" aria-current="page">Blog</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="blog-post">
+${bodyHtml}
+    </section>
+  </main>
+
+  <script src="../script.js"></script>
+</body>
+</html>`;
+}
+
 function makeRedirectHtml(targetHref) {
   return `<!doctype html>
 <html lang="en">
@@ -225,21 +263,39 @@ IMPORTANT:
 Return ONLY the full HTML file.
 `;
 
-  const htmlRaw = await runWorkersAI(promptText);
-  const html = ensureAffiliateTagOnAmazonLinks(htmlRaw);
+  // Ask AI for ONLY the inner HTML of the blog post
+const innerRaw = await runWorkersAI(promptText);
+const innerHtml = ensureAffiliateTagOnAmazonLinks(innerRaw);
 
-  if (!html.toLowerCase().includes("<html") && !html.toLowerCase().includes("<!doctype")) {
-    throw new Error("Monthly post generation did not return valid HTML.");
-  }
+// Guardrail: reject full HTML documents (prevents broken CSS)
+const lower = innerHtml.toLowerCase();
+if (
+  lower.includes("<html") ||
+  lower.includes("<head") ||
+  lower.includes("<body") ||
+  lower.includes("<!doctype")
+) {
+  throw new Error(
+    "Monthly post generation returned a full HTML document. Expected inner HTML only."
+  );
+}
 
-  const hasAmazon = html.includes("amazon.com");
-  if (hasAmazon && !html.includes(`tag=${AFF_TAG}`)) {
-    throw new Error("Monthly post missing affiliate tag.");
-  }
+// Require affiliate tag if amazon links exist
+if (innerHtml.includes("amazon.com") && !innerHtml.includes(`tag=${AFF_TAG}`)) {
+  throw new Error("Monthly post missing affiliate tag.");
+}
 
-  // Write dated monthly post (archive)
-  fs.writeFileSync(filePath, html, "utf8");
-  console.log(`Created new monthly post: ${filename}`);
+// Wrap the inner content in your REAL site template
+const fullHtml = wrapMonthlyInSiteTemplate({
+  filename,
+  title,
+  description: "Fresh teacher gift ideas and quick wins—updated monthly.",
+  innerHtml: innerHtml.trim(),
+});
+
+// Write dated monthly post (archive)
+fs.writeFileSync(filePath, fullHtml, "utf8");
+console.log(`Created new monthly post: ${filename}`);
 
   // Write/overwrite stable redirect to latest
   fs.writeFileSync(stablePath, makeRedirectHtml(filename), "utf8");
