@@ -1,0 +1,542 @@
+/*
+  Gifts for Teachers – site styles
+
+  This stylesheet defines a clean, modern look inspired by the Punchline website.
+  A bold hero section with a bright accent colour introduces the site, while
+  card‑style layouts are used for individual gift recommendations. Colours,
+  spacing and typography were chosen to be friendly and easy to read.
+*/
+
+/* Colour palette */
+:root {
+  /* Primary accent inspired by punchline.be */
+  --primary: #00bcd4; /* turquoise blue */
+  --secondary: #b388ff; /* soft violet accent */
+  --light-bg: #f9fbfc; /* very light background */
+  --dark-text: #222222; /* dark text for contrast */
+  --card-bg: #ffffff; /* white cards */
+  --card-shadow: rgba(0, 0, 0, 0.1);
+}
+
+/* Global reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  background-color: var(--light-bg);
+  color: var(--dark-text);
+  line-height: 1.6;
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+header {
+  background-color: var(--light-bg);
+  box-shadow: 0 2px 4px var(--card-shadow);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.container {
+  width: 90%;
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0;
+}
+
+.site-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+/* Logo image in place of site title */
+.site-logo img {
+  height: 48px;
+  width: auto;
+}
+
+.site-nav a {
+  margin-left: 1.5rem;
+  /* Use Helvetica Black Italic for menu text */
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 900;
+  font-style: italic;
+}
+.site-nav a:hover {
+  color: var(--secondary);
+}
+
+/* Hero section */
+/* Hero section with background image. We use flexbox to push content to the bottom. */
+.hero {
+  position: relative;
+  background-image: url('images/hero-bg.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  color: #ffffff;
+  /* Provide extra vertical space so the overlayed content sits near the bottom and the background image text is fully visible */
+  /* Increase height so the background image text is fully visible */
+  min-height: 900px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+/* Hero content positioned near the bottom of the hero image */
+/* Content inside the hero. It sits at the bottom thanks to the flex styles on .hero. */
+.hero .hero-content {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.hero-tagline {
+  font-size: 1.1rem;
+  /* Make tagline black and set in Helvetica Extra Bold Italic */
+  color: #000000;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 900;
+  font-style: italic;
+  margin-bottom: 0.5rem;
+  text-shadow: none;
+}
+
+/* Message displayed when a role is selected */
+.role-message {
+  font-size: 1rem;
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+  margin-top: 0.5rem;
+  max-width: 600px;
+  text-align: center;
+}
+
+/* Role selection styles */
+.role-selection {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.role-btn {
+  background-color: var(--secondary);
+  color: #ffffff;
+  border: none;
+  border-radius: 30px;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.role-btn:hover {
+  background-color: #9771ff;
+}
+
+/* Search container inside hero */
+.hero .search-container {
+  width: 100%;
+  max-width: 600px;
+}
+
+.hero #global-search-input {
+  width: 100%;
+  padding: 0.8rem 1.2rem;
+  border-radius: 40px;
+  border: none;
+  font-size: 1rem;
+}
+
+.hero .search-results {
+  margin-top: 1rem;
+  display: none;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+/* Override text colours for search result cards in the hero */
+.hero .search-results .product-item-content h3,
+.hero .search-results .product-item-content p {
+  color: var(--dark-text);
+}
+
+.hero .search-results .product-item-content a {
+  color: var(--secondary);
+  font-weight: 600;
+}
+
+/* Quick search */
+
+/* Recommendations */
+#recommendations {
+  padding: 2rem 1rem;
+}
+#recommendations h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+/* Product grid displays items in a single horizontal row that can be scrolled */
+.product-grid {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 1.5rem;
+  /* hide the native scrollbar; we scroll programmatically */
+  overflow-x: hidden;
+  padding-bottom: 1rem;
+  /* disable snap behaviour for continuous marquee effect */
+  scroll-snap-type: none;
+}
+.product-item {
+  background-color: var(--card-bg);
+  border-radius: 16px;
+  box-shadow: 0 4px 8px var(--card-shadow);
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.6rem;
+  flex: 0 0 260px;
+  /* no snap align for smooth scrolling */
+  transition: transform 0.3s ease;
+}
+
+/* Expand card slightly on hover */
+.product-item:hover {
+  transform: scale(1.05);
+}
+/* Hide the FontAwesome icons when images are used */
+.product-item i {
+  display: none;
+}
+
+/* Style for the placeholder image at the top of each card */
+.product-item img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 0.5rem;
+}
+.product-item-content h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.3rem;
+}
+.product-item-content p {
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+}
+.product-item-content a {
+  font-weight: 600;
+  color: var(--secondary);
+}
+
+/* Randomizer section styles */
+.randomizer-section {
+  background-color: var(--card-bg);
+  text-align: center;
+  padding: 2.5rem 1rem;
+}
+
+.randomizer-section h2 {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.randomizer-section p {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.randomizer-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.randomizer-controls select,
+.randomizer-controls button {
+  padding: 0.7rem 1.2rem;
+  border-radius: 30px;
+  border: 1px solid #cccccc;
+  font-size: 1rem;
+}
+
+.randomizer-controls button {
+  background-color: var(--secondary);
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.randomizer-controls button:hover {
+  background-color: #9771ff;
+}
+
+.random-result {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+}
+
+.random-result .product-item {
+  max-width: 400px;
+}
+
+/* Footer */
+footer {
+  background-color: var(--primary);
+  color: #ffffff;
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.85rem;
+  margin-top: 2rem;
+}
+
+/* Section headings on subpages */
+section.page-intro {
+  background-color: var(--primary);
+  color: #ffffff;
+  padding: 3rem 1rem;
+  text-align: center;
+}
+section.page-intro h2 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+section.page-intro p {
+  font-size: 1rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Gift category grid on subpages */
+.category-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  padding: 2rem 1rem;
+}
+.category-card {
+  background-color: var(--card-bg);
+  border-radius: 16px;
+  box-shadow: 0 4px 8px var(--card-shadow);
+  padding: 2rem 1rem;
+  text-align: center;
+  transition: transform 0.2s ease;
+}
+.category-card:hover {
+  transform: translateY(-4px);
+}
+.category-card i {
+  font-size: 2.5rem;
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+  /* Hide icons when images are present */
+  display: none;
+}
+
+/* When category cards use images instead of icons */
+.category-card img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 0.5rem;
+}
+.category-card h3 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+.category-card p {
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+.category-card a {
+  display: inline-block;
+  background-color: var(--secondary);
+  color: #ffffff;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease;
+}
+.category-card a:hover {
+  background-color: #9771ff;
+}
+
+/* Media queries for smaller devices */
+@media (max-width: 600px) {
+  .hero h2 {
+    font-size: 2rem;
+  }
+  .site-title {
+    font-size: 1.5rem;
+  }
+  .role-btn {
+    font-size: 0.9rem;
+    padding: 0.6rem 1.2rem;
+  }
+}
+
+/* Apply Helvetica Black Italic to all heading levels for a bold, dramatic style */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 900;
+  font-style: italic;
+}
+
+/* Blog styles */
+.blog-preview {
+  padding: 3rem 0 4rem;
+}
+
+.section-title {
+  text-align: center;
+  margin: 0 0 1.25rem;
+}
+
+.section-subtitle {
+  max-width: 920px;
+  margin: -0.5rem auto 2rem;
+  text-align: center;
+  color: #2b2b2b;
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+
+.blog-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.blog-card {
+  display: block;
+  padding: 1.25rem 1.25rem 1.1rem;
+  border-radius: 28px;
+  background: #ffffff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0,0,0,0.05);
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.blog-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+}
+
+.blog-card-meta {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.78rem;
+  color: rgba(0,0,0,0.6);
+  margin-bottom: 0.75rem;
+}
+
+.blog-card-title {
+  font-size: 1.35rem;
+  line-height: 1.1;
+  margin-bottom: 0.6rem;
+}
+
+.blog-card-desc {
+  color: #2b2b2b;
+  line-height: 1.55;
+}
+
+.blog-cta {
+  text-align: center;
+  margin-top: 1.75rem;
+}
+
+.btn.secondary {
+  display: inline-block;
+  background: #000000;
+  color: #ffffff;
+  padding: 0.85rem 1.25rem;
+  border-radius: 999px;
+  text-decoration: none;
+  transition: transform 0.15s ease;
+}
+
+.btn.secondary:hover {
+  transform: translateY(-2px);
+}
+
+/* Blog post layout */
+.blog-post {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 2rem 1rem 4rem;
+}
+
+.blog-post .post-meta {
+  color: rgba(0,0,0,0.6);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+
+.blog-post h1 {
+  margin-bottom: 0.75rem;
+}
+
+.blog-post p {
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.blog-post ul {
+  padding-left: 1.25rem;
+  line-height: 1.7;
+}
+
+.blog-post .callout {
+  margin: 1.5rem 0;
+  padding: 1rem 1.25rem;
+  border-radius: 18px;
+  background: rgba(0,0,0,0.04);
+}
+
+@media (max-width: 900px) {
+  .blog-grid {
+    grid-template-columns: 1fr;
+  }
+}
