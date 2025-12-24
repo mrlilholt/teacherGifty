@@ -1,0 +1,18 @@
+You are writing a brand-new blog post from a real teacher’s perspective for parents.
+
+Tone:
+- Warm, practical, teacher POV
+- Positive only
+- No hype, no urgency, no “buy now”
+- Evergreen language (do not mention years in the body; month is OK in the title only)
+
+Requirements:
+- Length: ~8–12 minute read (roughly 1,200–1,800 words)
+- Include a clear intro + sections + conclusion
+- Include at least 10 gift ideas with short teacher-style explanations
+- Embed Amazon links as SAFE evergreen Amazon search links (not specific ASINs)
+- Every Amazon link must include: ?tag=giftsforteacher-20
+- Include 3 internal links to existing posts using relative links like: blog/teacher-gifts-under-20.html
+- Output MUST be a FULL standalone HTML file ONLY (no commentary).
+- Use simple semantic HTML: h1, h2, p, ul/li, a tags.
+- Do not add external JS/CSS; keep it compatible with a simple static site.
