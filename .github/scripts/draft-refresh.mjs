@@ -224,6 +224,51 @@ ${html}
     console.log(`Updated existing post: ${file}`);
   }
 }
+const SITE_BASE_URL = "https://giftsforteachers.netlify.app";
+
+function wrapMonthlyInSiteTemplate({ filename, title, description, innerHtml }) {
+  const canonical = `${SITE_BASE_URL}/blog/${filename}`;
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>${title}</title>
+  <meta name="description" content="${description}" />
+  <meta name="robots" content="index, follow" />
+
+  <link rel="canonical" href="${canonical}" />
+  <link rel="stylesheet" href="../style.css" />
+</head>
+
+<body>
+<header>
+  <div class="container">
+    <div class="site-logo">
+      <a href="../index.html"><img src="../images/logo.png" alt="Gifts for Teachers logo" /></a>
+    </div>
+    <nav class="site-nav">
+      <a href="../index.html">Home</a>
+      <a href="../holidays.html">Holidays</a>
+      <a href="../types.html">Gift Types</a>
+      <a class="active" href="../blog.html">Blog</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<section class="blog-post">
+${innerHtml}
+</section>
+</main>
+
+<footer>
+  <p>© ${new Date().getFullYear()} Gifts for Teachers. As an Amazon Associate, we earn from qualifying purchases.</p>
+</footer>
+</body>
+</html>`;
+}
 
 async function createMonthlyPost() {
   const stamp = monthStamp(); // e.g., "2025-12"
@@ -264,20 +309,25 @@ Return ONLY the full HTML file.
 `;
 
   // Ask AI for ONLY the inner HTML of the blog post
+// Ask AI for ONLY the inner HTML of the blog post
 const innerRaw = await runWorkersAI(promptText);
 const innerHtml = ensureAffiliateTagOnAmazonLinks(innerRaw);
 
-// Guardrail: reject full HTML documents (prevents broken CSS)
+// HARD guardrail: inner HTML must NOT contain layout tags
+const forbidden = [
+  "<!doctype", "<html", "<head", "<body",
+  "<header", "</header",
+  "<main", "</main",
+  "<footer", "</footer",
+  "<section", "</section",
+  "<link", "<script"
+];
+
 const lower = innerHtml.toLowerCase();
-if (
-  lower.includes("<html") ||
-  lower.includes("<head") ||
-  lower.includes("<body") ||
-  lower.includes("<!doctype")
-) {
-  throw new Error(
-    "Monthly post generation returned a full HTML document. Expected inner HTML only."
-  );
+for (const token of forbidden) {
+  if (lower.includes(token)) {
+    throw new Error(`Monthly post inner HTML contains forbidden tag: ${token}`);
+  }
 }
 
 // Require affiliate tag if amazon links exist
@@ -285,7 +335,7 @@ if (innerHtml.includes("amazon.com") && !innerHtml.includes(`tag=${AFF_TAG}`)) {
   throw new Error("Monthly post missing affiliate tag.");
 }
 
-// Wrap the inner content in your REAL site template
+// Wrap the inner content in the real site template
 const fullHtml = wrapMonthlyInSiteTemplate({
   filename,
   title,
