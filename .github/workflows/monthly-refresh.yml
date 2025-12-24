@@ -24,9 +24,10 @@ jobs:
       - name: Install deps
         run: npm init -y && npm install openai@4
 
-      - name: Draft updates (1–2 posts)
+      - name: Draft updates (1–2 posts) using Cloudflare Workers AI
         env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: node .github/scripts/draft-refresh.mjs
 
       - name: Create Pull Request

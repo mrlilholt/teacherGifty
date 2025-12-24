@@ -1,76 +1,111 @@
 import fs from "fs";
 import path from "path";
-import OpenAI from "openai";
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
-// ✅ CHANGE THIS if your blog folder differs
 const BLOG_DIR = "blog";
-
-// Safety: keep small
 const MAX_FILES = 2;
-
-// Your affiliate tag
 const AFF_TAG = "giftsforteacher-20";
 
-const prompt = fs.readFileSync(".github/prompts/monthly_refresh_prompt.txt", "utf8");
+const ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID;
+const API_TOKEN = process.env.CLOUDFLARE_API_TOKEN;
+
+// Good starter model:
+const MODEL = "@cf/meta/llama-3.1-8b-instruct-fast";
+
+if (!ACCOUNT_ID || !API_TOKEN) {
+  console.error("Missing CLOUDFLARE_ACCOUNT_ID or CLOUDFLARE_API_TOKEN.");
+  process.exit(1);
+}
+
+const basePrompt = fs.readFileSync(".github/prompts/monthly_refresh_prompt.txt", "utf8");
 
 function listHtmlFiles(dir) {
-  return fs.readdirSync(dir).filter(f => f.endsWith(".html"));
+  return fs.readdirSync(dir).filter((f) => f.endsWith(".html"));
 }
 
 function pickFiles(files) {
-  // Simple rotation: pick first N alphabetically.
-  // (Later we can enhance with a tracker file / season logic.)
   return files.sort().slice(0, MAX_FILES);
 }
 
-const files = pickFiles(listHtmlFiles(BLOG_DIR));
+async function runWorkersAI(promptText) {
+  const url = `https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/ai/run/${encodeURIComponent(MODEL)}`;
 
+  // Workers AI text-generation expects "prompt" for many LLMs.
+  // We'll ask it to return full HTML only.
+  const body = {
+    prompt: promptText,
+    max_tokens: 3500,
+  };
+
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${API_TOKEN}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) {
+    const t = await res.text();
+    throw new Error(`Workers AI request failed (${res.status}): ${t}`);
+  }
+
+  const data = await res.json();
+
+  // Cloudflare returns result in different shapes depending on model.
+  // For LLMs, commonly: { result: { response: "..." } } or { result: "..." }
+  const result = data?.result;
+  const text =
+    typeof result === "string"
+      ? result
+      : result?.response || result?.output_text || result?.text;
+
+  if (!text) throw new Error("No text returned from Workers AI.");
+
+  return String(text).trim();
+}
+
+const files = pickFiles(listHtmlFiles(BLOG_DIR));
 const today = new Date().toISOString().slice(0, 10);
 
 for (const file of files) {
   const filePath = path.join(BLOG_DIR, file);
   const html = fs.readFileSync(filePath, "utf8");
 
-  const userMsg = `
+  const combinedPrompt = `
+${basePrompt}
+
 DATE: ${today}
 FILE: ${file}
 
 REQUIREMENTS:
-- Output ONLY the FULL updated HTML file.
+- Output ONLY the FULL updated HTML file. No commentary.
 - Maintain existing header/nav/footer and CSS references.
 - If any amazon.com links are present, ensure they include ?tag=${AFF_TAG}
-- Keep content evergreen (no years).
+- Keep content evergreen (no years in article content).
 
 CURRENT HTML:
 ${html}
 `;
 
-  const response = await openai.chat.completions.create({
-    model: "gpt-4.1-mini",
-    messages: [
-      { role: "system", content: prompt },
-      { role: "user", content: userMsg }
-    ],
-    temperature: 0.4,
-  });
+  try {
+    const updated = await runWorkersAI(combinedPrompt);
 
-  const updated = response.choices?.[0]?.message?.content?.trim();
+    if (!updated.toLowerCase().includes("<html") && !updated.toLowerCase().includes("<!doctype")) {
+      console.error(`No valid HTML returned for ${file}. Skipping write.`);
+      continue;
+    }
 
-  // Basic validity checks
-  if (!updated || !updated.toLowerCase().includes("<!doctype") && !updated.toLowerCase().includes("<html")) {
-    console.error(`No valid HTML returned for ${file}. Skipping.`);
-    continue;
+    const hasAmazon = updated.includes("amazon.com");
+    if (hasAmazon && !updated.includes(`tag=${AFF_TAG}`)) {
+      console.error(`Affiliate tag missing in ${file}. Skipping write.`);
+      continue;
+    }
+
+    fs.writeFileSync(filePath, updated, "utf8");
+    console.log(`Updated: ${file}`);
+  } catch (err) {
+    console.error(`Failed for ${file}:`, err.message);
+    process.exitCode = 1;
   }
-
-  // If amazon links exist, require affiliate tag
-  const hasAmazon = updated.includes("amazon.com");
-  if (hasAmazon && !updated.includes(`tag=${AFF_TAG}`)) {
-    console.error(`Affiliate tag missing in ${file}. Skipping write.`);
-    continue;
-  }
-
-  fs.writeFileSync(filePath, updated, "utf8");
-  console.log(`Updated: ${file}`);
 }
