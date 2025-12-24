@@ -27,10 +27,9 @@ function pickFiles(files) {
 }
 
 async function runWorkersAI(promptText) {
-  const url = `https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/ai/run/${encodeURIComponent(MODEL)}`;
+  const modelPath = MODEL.split("/").map(encodeURIComponent).join("/");
+  const url = `https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/ai/run/${modelPath}`;
 
-  // Workers AI text-generation expects "prompt" for many LLMs.
-  // We'll ask it to return full HTML only.
   const body = {
     prompt: promptText,
     max_tokens: 3500,
@@ -51,10 +50,8 @@ async function runWorkersAI(promptText) {
   }
 
   const data = await res.json();
-
-  // Cloudflare returns result in different shapes depending on model.
-  // For LLMs, commonly: { result: { response: "..." } } or { result: "..." }
   const result = data?.result;
+
   const text =
     typeof result === "string"
       ? result
@@ -64,6 +61,7 @@ async function runWorkersAI(promptText) {
 
   return String(text).trim();
 }
+
 
 const files = pickFiles(listHtmlFiles(BLOG_DIR));
 const today = new Date().toISOString().slice(0, 10);
