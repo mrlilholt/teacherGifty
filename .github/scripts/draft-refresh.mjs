@@ -1,3 +1,4 @@
+// .github/scripts/draft-refresh.mjs
 import fs from "fs";
 import path from "path";
 
@@ -27,7 +28,8 @@ function listHtmlFiles(dir) {
 
 function pickFiles(files) {
   return files
-    .filter((f) => !f.startsWith("monthly-teacher-gift-refresh-")) // don't re-edit our monthly posts
+    .filter((f) => !f.startsWith("monthly-teacher-gift-refresh-")) // don't re-edit our monthly archive posts
+    .filter((f) => f !== "monthly-teacher-gift-refresh.html") // don't edit the stable redirect page
     .sort()
     .slice(0, MAX_FILES);
 }
@@ -42,7 +44,6 @@ function monthStamp() {
 function prettyMonthTitle() {
   const d = new Date();
   const month = d.toLocaleString("en-US", { month: "long" });
-  const year = d.getFullYear();
   return `${month} Teacher Gift Ideas & Quick Wins`;
 }
 
@@ -84,8 +85,7 @@ async function runWorkersAI(promptText) {
 }
 
 function ensureAffiliateTagOnAmazonLinks(html) {
-  // This is a safety net; we still *require* tag if amazon.com is present.
-  // We'll only patch simple amazon.com URLs that have no tag parameter.
+  // Safety net: append tag to amazon.com URLs that don't have one.
   return html.replace(/https?:\/\/(www\.)?amazon\.com\/[^\s"']+/g, (url) => {
     if (url.includes("tag=")) return url;
     const joiner = url.includes("?") ? "&" : "?";
@@ -93,57 +93,55 @@ function ensureAffiliateTagOnAmazonLinks(html) {
   });
 }
 
-function updateBlogIndex(newPostRelativePath, title) {
-  // Your blog index page is /blog.html at repo root
-  const indexPath = "blog.html";
-  if (!fs.existsSync(indexPath)) {
-    console.warn("blog.html not found; skipping index update.");
+/**
+ * Make a stable redirect file that always forwards to the latest dated monthly post.
+ * This lets your blog card link stay stable forever.
+ */
+function makeRedirectHtml(targetHref) {
+  return `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Monthly Teacher Gift Refresh</title>
+  <meta http-equiv="refresh" content="0; url=${targetHref}">
+  <link rel="canonical" href="${targetHref}">
+  <meta name="robots" content="noindex, follow">
+  <script>location.replace(${JSON.stringify(targetHref)});</script>
+</head>
+<body>
+  <p>Redirecting to the latest monthly refresh… <a href="${targetHref}">Click here</a>.</p>
+</body>
+</html>`;
+}
+
+/**
+ * Update ONE stable card in blog.html by swapping its href to the stable monthly URL.
+ * You must add data-monthly="true" to that card's <a> tag once.
+ *
+ * Example in blog.html:
+ * <a class="blog-card" data-monthly="true" href="blog/monthly-teacher-gift-refresh.html">...</a>
+ */
+function updateMonthlyCardToStableUrl() {
+  const blogIndexPath = "blog.html";
+  if (!fs.existsSync(blogIndexPath)) {
+    console.warn("blog.html not found; skipping monthly card update.");
     return;
   }
 
-  let indexHtml = fs.readFileSync(indexPath, "utf8");
+  let html = fs.readFileSync(blogIndexPath, "utf8");
 
-  // Avoid duplicate insertions
-  if (indexHtml.includes(newPostRelativePath)) {
-    console.log("blog.html already contains link to monthly post; skipping.");
+  // Finds the opening <a ... data-monthly="true" ... href="...">
+  const re = /<a([^>]*\sdata-monthly="true"[^>]*)href="[^"]*"([^>]*)>/i;
+
+  if (!re.test(html)) {
+    console.warn('Monthly card not found. Add data-monthly="true" to the monthly card <a> in blog.html.');
     return;
   }
 
-  // Insert a new link near the top of the main content.
-  // Best-effort insertion: right after the first <main> or <body> tag.
-  const linkHtml = `\n<li><a href="${newPostRelativePath}">${title}</a></li>\n`;
-
-  if (indexHtml.includes("<main")) {
-    // Insert after first <main...> then try to find first <ul> inside; otherwise add a new UL.
-    const mainStart = indexHtml.indexOf("<main");
-    const mainTagEnd = indexHtml.indexOf(">", mainStart);
-    const afterMain = mainTagEnd + 1;
-
-    const ulStart = indexHtml.indexOf("<ul", afterMain);
-    if (ulStart !== -1) {
-      const ulTagEnd = indexHtml.indexOf(">", ulStart);
-      indexHtml = indexHtml.slice(0, ulTagEnd + 1) + linkHtml + indexHtml.slice(ulTagEnd + 1);
-    } else {
-      indexHtml =
-        indexHtml.slice(0, afterMain) +
-        `\n<ul>${linkHtml}</ul>\n` +
-        indexHtml.slice(afterMain);
-    }
-  } else if (indexHtml.includes("<body")) {
-    const bodyStart = indexHtml.indexOf("<body");
-    const bodyTagEnd = indexHtml.indexOf(">", bodyStart);
-    const afterBody = bodyTagEnd + 1;
-    indexHtml =
-      indexHtml.slice(0, afterBody) +
-      `\n<ul>${linkHtml}</ul>\n` +
-      indexHtml.slice(afterBody);
-  } else {
-    // Fallback: append
-    indexHtml += `\n<ul>${linkHtml}</ul>\n`;
-  }
-
-  fs.writeFileSync(indexPath, indexHtml, "utf8");
-  console.log("Updated blog.html with new monthly post link.");
+  html = html.replace(re, `<a$1href="blog/monthly-teacher-gift-refresh.html"$2>`);
+  fs.writeFileSync(blogIndexPath, html, "utf8");
+  console.log("Updated blog.html monthly card href to stable URL.");
 }
 
 async function refreshExistingPosts() {
@@ -190,28 +188,39 @@ ${html}
 }
 
 async function createMonthlyPost() {
-  const stamp = monthStamp();
+  const stamp = monthStamp(); // e.g., "2025-12"
   const filename = `monthly-teacher-gift-refresh-${stamp}.html`;
   const filePath = path.join(BLOG_DIR, filename);
 
-  if (fs.existsSync(filePath)) {
-    console.log(`Monthly post already exists (${filename}); skipping creation.`);
-    return null;
-  }
-
   const title = prettyMonthTitle();
+
+  // Stable redirect file path (always exists / always points to latest)
+  const stableName = "monthly-teacher-gift-refresh.html";
+  const stablePath = path.join(BLOG_DIR, stableName);
+
+  // If dated post already exists, still refresh stable redirect + card and exit.
+  if (fs.existsSync(filePath)) {
+    fs.writeFileSync(stablePath, makeRedirectHtml(filename), "utf8");
+    updateMonthlyCardToStableUrl();
+    console.log(`Monthly post already exists (${filename}); refreshed stable redirect + blog card.`);
+    return filename;
+  }
 
   const promptText = `
 ${newPostPrompt}
 
 POST TITLE (H1): ${title}
 
+HARD REQUIREMENTS (DO NOT VIOLATE):
+- Output MUST be a complete HTML document with <!doctype html>, <html>, <head>, <body>.
+- Include this exact stylesheet link in <head>: <link rel="stylesheet" href="../style.css" />
+- Wrap the main content in: <section class="blog-post"> ... </section>
+- Every gift idea MUST include a clickable <a> tag to an Amazon SEARCH URL that includes ?tag=${AFF_TAG}
+- No placeholder links. No plain text "links".
+- Include a short affiliate disclosure near the bottom.
+
 IMPORTANT:
 - Use relative internal links to existing posts in /blog (example: blog/teacher-gifts-under-20.html)
-- Use ONLY Amazon search links like:
-  https://www.amazon.com/s?k=teacher+gift+ideas&tag=${AFF_TAG}
-- Output must be a complete HTML document with <!doctype html>, <head>, <body>.
-- Include a short affiliate disclosure near the bottom.
 
 Return ONLY the full HTML file.
 `;
@@ -223,17 +232,21 @@ Return ONLY the full HTML file.
     throw new Error("Monthly post generation did not return valid HTML.");
   }
 
-  // Require affiliate tag if amazon links exist
   const hasAmazon = html.includes("amazon.com");
   if (hasAmazon && !html.includes(`tag=${AFF_TAG}`)) {
     throw new Error("Monthly post missing affiliate tag.");
   }
 
+  // Write dated monthly post (archive)
   fs.writeFileSync(filePath, html, "utf8");
   console.log(`Created new monthly post: ${filename}`);
 
-  // Update blog index to include it
-  updateBlogIndex(`blog/${filename}`, title);
+  // Write/overwrite stable redirect to latest
+  fs.writeFileSync(stablePath, makeRedirectHtml(filename), "utf8");
+  console.log(`Updated stable monthly redirect: ${stableName} -> ${filename}`);
+
+  // Ensure blog.html card href points to stable file (not dated file)
+  updateMonthlyCardToStableUrl();
 
   return filename;
 }
